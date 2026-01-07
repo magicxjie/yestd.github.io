@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的特色博客</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* CSS 变量定义 - 方便统一管理配色 */
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #00cec9;
+            --accent-color: #fdcb6e;
+            --dark-color: #2d3436;
+            --light-color: #f5f6fa;
+            --text-color: #636e72;
+            --white-color: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        /* 基础样式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-color);
+            overflow-x: hidden;
+        }
+        
+        /* 容器样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 头部样式 */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white-color);
+            padding: 20px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        /* 头部装饰元素 */
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -20%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            animation: float 4s ease-in-out infinite reverse;
+        }
+        
+        /* 浮动动画 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* 头部内容 */
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 博客标题 */
+        .blog-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 导航菜单 */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: var(--white-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        /* 导航链接 hover 效果 */
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: var(--transition);
+        }
+        
+        nav a:hover {
+            color: var(--accent-color);
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            background: linear-gradient(135deg, var(--light-color), #e8f4f8);
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-bottom: 30px;
+        }
+        
+        /* 特色按钮 */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white-color);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            padding: 60px 0;
+        }
+        
+        /* 内容布局 - 网格系统 */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 40px;
+        }
+        
+        /* 文章列表 */
+        .articles {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        /* 特色文章卡片 */
+        .article-card {
+            background-color: var(--white-color);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 文章图片 */
+        .article-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .article-card:hover .article-image {
+            transform: scale(1.05);
+        }
+        
+        /* 文章内容 */
+        .article-content {
+            padding: 25px;
+        }
+        
+        /* 文章元数据 */
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #95a5a6;
+        }
+        
+        .article-category {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* 文章标题 */
+        .article-title {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        
+        /* 文章摘要 */
+        .article-excerpt {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        /* 阅读更多按钮 */
+        .read-more {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .read-more:hover {
+            color: var(--secondary-color);
+        }
+        
+        .read-more::after {
+            content: '→';
+            transition: var(--transition);
+        }
+        
+        .read-more:hover::after {
+            transform: translateX(5px);
+        }
+        
+        /* 侧边栏 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        /* 侧边栏组件 */
+        .sidebar-widget {
+            background-color: var(--white-color);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+        
+        /* 侧边栏标题 */
+        .widget-title {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .widget-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 3px;
+        }
+        
+        /* 关于我组件 */
+        .about-me {
+            text-align: center;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 5px solid var(--light-color);
+            box-shadow: var(--shadow);
+        }
+        
+        .about-me h3 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+        
+        /* 分类列表 */
+        .category-list {
+            list-style: none;
+        }
+        
+        .category-list li {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .category-list li:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .category-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .category-list a:hover {
+            color: var(--primary-color);
+        }
+        
+        .category-count {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* 热门标签 */
+        .tags-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tag {
+            background-color: var(--light-color);
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .tag:hover {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white-color);
+            transform: translateY(-2px);
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--dark-color);
+            color: var(--white-color);
+            padding: 60px 0 30px;
+        }
+        
+        /* 页脚内容 */
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        /* 页脚关于 */
+        .footer-about h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+        
+        /* 页脚链接 */
+        .footer-links h3,
+        .footer-contact h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+            padding-left: 5px;
+        }
+        
+        /* 联系信息 */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* 版权信息 */
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #34495e;
+            color: #bdc3c7;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            nav ul {
+                gap: 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .main-content {
+                padding: 40px 0;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .blog-title {
+                font-size: 1.5rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1 class="blog-title">Blog</h1>
+                <nav>
+                    <ul>
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">文章</a></li>
+                        <li><a href="#">分类</a></li>
+                        <li><a href="#">关于我</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>探索代码的无限可能</h1>
+                <p>记录学习心得，分享技术干货，交流编程经验</p>
+                <a href="#" class="btn">开始阅读</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- 文章列表 -->
+                <div class="articles">
+                    <!-- 文章1 -->
+                    <article class="article-card">
+                        <img src="https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="HTML5 新特性" class="article-image">
+                        <div class="article-content">
+                            <div class="article-meta">
+                                <span class="article-category">前端开发</span>
+                                <span>2026-01-06</span>
+                              
+                            </div>
+                            <h2 class="article-title">HTML5 新特性全面解析</h2>
+                            <p class="article-excerpt">HTML5 作为现代网页开发的基础，带来了许多强大的新特性。本文将全面解析 HTML5 的核心功能，包括语义化标签、Canvas 绘图、本地存储、音频视频支持等，帮助你快速掌握 HTML5 开发技能。</p>
+                            <a href="#" class="read-more">阅读全文</a>
+                        </div>
+                    </article>
+                    
+                    <!-- 文章2 -->
+                    <article class="article-card">
+                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="CSS Grid 布局" class="article-image">
+                        <div class="article-content">
+                            <div class="article-meta">
+                                <span class="article-category">前端开发</span>
+                                <span>2026-01-06</span>
+                                
+                            </div>
+                            <h2 class="article-title">CSS Grid 布局实战指南</h2>
+                            <p class="article-excerpt">CSS Grid 是 CSS 中最强大的布局系统，它允许你创建复杂的二维布局。本文将通过实际案例，详细介绍 CSS Grid 的核心概念和使用方法，包括网格容器、网格项、轨道、区域等，让你轻松掌握现代 CSS 布局技术。</p>
+                            <a href="#" class="read-more">阅读全文</a>
+                        </div>
+                    </article>
+                    
+                    <!-- 文章3 -->
+                    <article class="article-card">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="JavaScript 基础" class="article-image">
+                        <div class="article-content">
+                            <div class="article-meta">
+                                <span class="article-category">JavaScript</span>
+                                <span>2026-01-06</span>
+                               
+                            </div>
+                            <h2 class="article-title">JavaScript 基础语法详解</h2>
+                            <p class="article-excerpt">JavaScript 是现代网页开发的核心语言，掌握其基础语法是学习前端开发的第一步。本文将详细介绍 JavaScript 的变量、数据类型、运算符、控制流、函数等基础概念，帮助你建立扎实的 JavaScript 基础。</p>
+                            <a href="#" class="read-more">阅读全文</a>
+                        </div>
+                    </article>
+                </div>
+                
+                <!-- 侧边栏 -->
+                <aside class="sidebar">
+                    <!-- 关于我 -->
+                    <div class="sidebar-widget about-me">
+                        <h3 class="widget-title">关于我</h3>
+                        <img src="/实训作业/mw.webp" alt="个人头像" class="avatar">
+                        <h3>杨俊杰</h3>
+                        <p>人工智能专业大一学生，热爱前端开发和技术分享。专注于 HTML、CSS、JavaScript 等前端技术，致力于打造优秀的用户体验。</p>
+                    </div>
+                    
+                    <!-- 文章分类 -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">文章分类</h3>
+                        <ul class="category-list">
+                            <li>
+                                <a href="#">
+                                    <span>前端开发</span>
+                                    <span class="category-count">12</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>JavaScript</span>
+                                    <span class="category-count">8</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>CSS</span>
+                                    <span class="category-count">6</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>HTML</span>
+                                    <span class="category-count">5</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>学习方法</span>
+                                    <span class="category-count">4</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 热门标签 -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">热门标签</h3>
+                        <div class="tags-cloud">
+                            <a href="#" class="tag">HTML5</a>
+                            <a href="#" class="tag">CSS3</a>
+                            <a href="#" class="tag">JavaScript</a>
+                            <a href="#" class="tag">前端开发</a>
+                            <a href="#" class="tag">响应式设计</a>
+                            <a href="#" class="tag">Grid布局</a>
+                            <a href="#" class="tag">Flexbox</a>
+                            <a href="#" class="tag">CSS变量</a>
+                            <a href="#" class="tag">学习笔记</a>
+                            <a href="#" class="tag">编程技巧</a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <!-- 关于博客 -->
+                <div class="footer-about">
+                    <h3>Blog</h3>
+                    <p>一个专注于前端开发的技术博客，分享最新的技术资讯、学习心得和实战经验。在这里，我们一起探索代码的无限可能。</p>
+                </div>
+                
+                <!-- 快速链接 -->
+                <div class="footer-links">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">文章</a></li>
+                        <li><a href="#">分类</a></li>
+                        <li><a href="#">关于我</a></li>
+                    </ul>
+                </div>
+                
+                <!-- 联系我 -->
+                <div class="footer-contact">
+                    <h3>联系我</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <span>📧</span>
+                            <span>yang@example.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <span>📱</span>
+                            <span>158-9237-8296</span>
+                        </div>
+                        <div class="contact-item">
+                            <span>📍</span>
+                            <span>重庆市綦江区</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 版权信息 -->
+            <div class="copyright">
+                <p>&copy; 2026 Blog. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
